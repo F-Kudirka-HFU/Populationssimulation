@@ -34,14 +34,16 @@ public class Zeichnen extends JFrame {
 	public static JLabel gRest = new JLabel("");
 	public static JLabel hRest = new JLabel("");
 	public static JLabel zeit = new JLabel("");
+	public static JLabel gfallene = new JLabel("");
+	public static JLabel hfallene = new JLabel("");
 
-	boolean drawAtAll = false; // Wird ben?tigt um zu ?berpr?fen ob start
-								// gedr?ckt wurde ==> sonst geht er immer in
-								// draw rein
+	boolean drawAtAll = false; // Wird benötigt um zu überprüfen ob start
+	// gedrückt wurde ==> sonst geht er immer in
+	// draw rein
 
 	Thread tLayout;
 
-	public void setLab(String end, String RestG, String RestH, String t) {
+	public void setLab(String end, String RestG, String RestH, String t, String gFallene, String hFallene) {
 		labEnd.setText("Endzeit: " + end);
 		gRest.setText("gRest: " + RestG);
 		hRest.setText("hRest: " + RestH);
@@ -50,14 +52,15 @@ public class Zeichnen extends JFrame {
 		} else {
 			zeit.setText("T: " + t);
 		}
-		
 
+		gfallene.setText("Gefallene G: "+ gFallene);
+		hfallene.setText("Gefallene H: "+ hFallene);
 	}
 
 
 
 	public Zeichnen() {
-		// Hier werden dem Frame Titel, Gr??e und die Icons zugewiesen
+		// Hier werden dem Frame Titel, Größe und die Icons zugewiesen
 		setTitle("Populationssimulation");
 		setSize(Constants.WINDOW_WIDTH + 10, Constants.WINDOW_HEIGHT + 110);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -71,7 +74,7 @@ public class Zeichnen extends JFrame {
 		JLabel lab3 = new JLabel("s");
 		JLabel lab4 = new JLabel("r");
 		JLabel lab5 = new JLabel("delay");
-		JLabel luecke = new JLabel("");
+		JLabel lücke = new JLabel("");
 
 		// Button wird angelegt
 		JButton start = new JButton("Start");
@@ -93,7 +96,7 @@ public class Zeichnen extends JFrame {
 						drawAtAll = true;
 
 						try {
-							// Bef?llt zeichnen
+							// Befüllt zeichnen
 							zeichnen((Integer.parseInt(g.getText())), (Integer.parseInt(h.getText())),
 									(Integer.parseInt(s.getText())), (Integer.parseInt(r.getText())),
 									(Integer.parseInt(delay.getText())));
@@ -105,13 +108,13 @@ public class Zeichnen extends JFrame {
 				};
 
 				tLayout = new Thread(run); // Thread wird initialisiert und
-											// ausgef?hrt // und ausgef?hrt
+				// ausgeführt // und ausgeführt
 				tLayout.start();
 			}
 		});
 
 		// Panel wird erzeugt und mit Farbe, Layout, Labels und Textfeldern
-		// bef?llt
+		// befüllt
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(2, 10, 30, 0));
 		panel.setBackground(Color.LIGHT_GRAY);
@@ -126,13 +129,13 @@ public class Zeichnen extends JFrame {
 		panel.add(r, c);
 		panel.add(lab5, c);
 		panel.add(delay, c);
-		panel.add(luecke, c);
+		panel.add(lücke, c);
 		panel.add(start, c);
 
-		// panel wird in Frame eingef?gt
+		// panel wird in Frame eingefügt
 		add(panel, BorderLayout.NORTH);
 
-		//zweites Panel f?r Zeit, G, H und Endzeit
+		//zweites Panel für Zeit, G, H und Endzeit
 		JPanel panelE = new JPanel();
 		panelE.add(labEnd);
 		gRest.setForeground(Color.red);
@@ -140,6 +143,10 @@ public class Zeichnen extends JFrame {
 		hRest.setForeground(Color.blue);
 		panelE.add(hRest);
 		panelE.add(zeit);
+		gfallene.setForeground(Color.green);
+		panelE.add(gfallene);
+		hfallene.setForeground(Color.DARK_GRAY);
+		panelE.add(hfallene);
 		add(panelE);
 		setVisible(true);
 	}
@@ -156,11 +163,11 @@ public class Zeichnen extends JFrame {
 
 	public void erstelleKreise() {
 
-		// Random wird angelegt f?r die X und Y-Positionen der Kreise
+		// Random wird angelegt für die X und Y-Positionen der Kreise
 		Random generator = new Random();
 
 		for (int i = 0; i < p.getG(); i++) // For-Schleife generiert Punkte von
-											// der Population G
+		// der Population G
 		{
 			Kreis k = new Kreis();
 			k.diameter = 80;
@@ -171,7 +178,7 @@ public class Zeichnen extends JFrame {
 			// posision y von den Kreisen von G
 			k.positionY = generator.nextInt((getSize().height - 110) - 20) + 20;
 
-			// Aktuelle Gr??e vom Frame ==> -110 weil dort erst der Backbuffer
+			// Aktuelle Größe vom Frame ==> -110 weil dort erst der Backbuffer
 			// beginnt
 			k.con_width = getSize().width - 10;
 			k.con_height = getSize().height - 110;
@@ -180,7 +187,7 @@ public class Zeichnen extends JFrame {
 		}
 
 		for (int i = 0; i < p.getH(); i++) {// For-Schleife generiert Punkte von
-											// der Population H
+			// der Population H
 			Kreis k = new Kreis();
 
 			k.diameter = 80;
@@ -211,7 +218,7 @@ public class Zeichnen extends JFrame {
 		}
 	}
 
-	// Zeichnet automatisch ==> braucht man f?rs Fenster skalieren
+	// Zeichnet automatisch ==> braucht man fürs Fenster skalieren
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
@@ -220,11 +227,11 @@ public class Zeichnen extends JFrame {
 
 	public void draw() {
 
-		if (!drawAtAll) // Wenn ?berhaupt auf Start geklickt wurde zeichne
-						// Kreise
+		if (!drawAtAll) // Wenn überhaupt auf Start geklickt wurde zeichne
+			// Kreise
 			return;
 
-		// Frame wird auf neue Gr??e skaliert
+		// Frame wird auf neue Größe skaliert
 		Constants.WINDOW_WIDTH = getSize().width - 10;
 		Constants.WINDOW_HEIGHT = getSize().height - 110;
 
@@ -233,11 +240,11 @@ public class Zeichnen extends JFrame {
 		Graphics g = getGraphics();
 		Graphics bbg = backBuffer.getGraphics();
 
-		// Backbuffer malt Hintergrund Wei?
+		// Backbuffer malt Hintergrund Weiß
 		bbg.setColor(Color.white);
 		bbg.fillRect(0, 0, Constants.WINDOW_WIDTH, Constants.WINDOW_HEIGHT);
 
-		// gibt Farbe f?r H an
+		// gibt Farbe für H an
 		bbg.setColor(Color.blue);
 
 		// Malt Kreise von H
@@ -250,16 +257,17 @@ public class Zeichnen extends JFrame {
 			bbg.fillOval((int) (faktorX), (int) (faktorY), 10, 10);
 		}
 
-		// gibt Farbe f?r G an
+		// gibt Farbe für G an
 		bbg.setColor(Color.red);
 
 		// Malt Kreise von G
 		for (Kreis zeichnen : g1) {
 
-			// Fragt ab wie die derzeitige Fenstergr??e ist und gibt dem Kreis
+			// Fragt ab wie die derzeitige Fenstergröße ist und gibt dem Kreis
 			// eine neu skalierte Position proportional zum Window
 			float faktorX = ((float) Constants.WINDOW_WIDTH / (float) zeichnen.con_width) * (float) zeichnen.positionX;
-			float faktorY = ((float) Constants.WINDOW_HEIGHT / (float) zeichnen.con_height) * (float) zeichnen.positionY;
+			float faktorY = ((float) Constants.WINDOW_HEIGHT / (float) zeichnen.con_height)
+					* (float) zeichnen.positionY;
 
 			bbg.fillOval((int) (faktorX), (int) (faktorY), 10, 10);
 		}
